@@ -1,6 +1,4 @@
-// Target file: play_scrub.h
-
-#ifndef PLAY_SCRUB_H_
+#ifndef PLAY_SCRUB_H_ // Standard include guard
 #define PLAY_SCRUB_H_
 
 #include <Arduino.h> // For standard types, Serial, delay, math functions etc.
@@ -33,45 +31,43 @@ public:
     void setMode(int mode_val);
     void stop(void);
     void setScrubBuffer(int16_t* b);
-    void activate(bool active_val, int new_mode); // Declaration
+    void activate(bool active_val, int new_mode); 
 
     // Override the pure virtual function from AudioStream
     virtual void update(void); // This is essential
 
-    // --- Inline Getter Method Definitions ---
-    const char* getFilename() const; // Declaration (definition in .cpp)
-    uint64_t get_file_size_bytes() const { return fileSize; }
-    int getMode() const { return mode; }
-    bool isPlaying() const { return isActive && mode != 3; }
+    // --- Getter Method Declarations (definitions in .cpp or inline) ---
+    const char* getFilename() const; 
+    uint64_t get_file_size_bytes() const { return fileSize; } // Inline definition
+    int getMode() const { return mode; }                     // Inline definition
+    bool isPlaying() const { return isActive && mode != 3; } // Inline definition
 
 
 private:
     // --- Private Member Variables ---
-    // Order can matter for initialization lists, but primarily for clarity.
     File file;
     int16_t *buf;
     const uint bufLength = AUDIO_BLOCK_SAMPLES * 128; // Initialized here
-    uint64_t fileSize; // In bytes
+    uint64_t fileSize; 
     float playhead;
-    float playheadReference; // Byte offset in file corresponding to buf[0]
-    float targetPlayhead;    // Target position in bytes
-    int index;               // Current sample index in 'buf' for playback
-    int bufCounter;          // General purpose counter, if needed for buffer logic
-    float speed;             // For continuous playback mode (mode 0)
-    int mode;                // 0: Continuous, 1: Direct Scrub, 3: Stopped
+    float playheadReference; 
+    float targetPlayhead;    
+    int index;               
+    int bufCounter;          
+    float speed;             
+    int mode;                
     volatile bool isActive;
-    volatile float scrubRateFactor; // For interpolated scrubbing (if re-enabled)
-    char currentScrubFilename[100]; // Max filename length
+    volatile float scrubRateFactor; 
+    char currentScrubFilename[100]; // Max filename length, ensure it's large enough
 
     // --- Private Helper Functions ---
     void grabBuffer(int16_t* bufferToFill); // Declaration
 
     // Inline template member function (definition must be in header)
-    template <typename T_param>
+    template <typename T_param> 
     int16_t lerp(int16_t a, int16_t b, float t) {
         return static_cast<int16_t>(a + (b - a) * t);
     }
-    // Make sure there are no stray characters or syntax errors above this line.
-}; // This should be the closing brace for the class AudioPlayScrub
+}; 
 
 #endif // PLAY_SCRUB_H_
